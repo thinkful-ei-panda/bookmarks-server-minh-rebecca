@@ -91,36 +91,37 @@ app.get('/bookmarks/:id', (req,res) => {
 
 
 
-app.post('/bookmarks', (req, res) => {
+app.post("/bookmarks", (req, res) => {
+  console.log(req);
   const { title, url, desc, rating } = req.body;
 
-  // if (!title) {
-  //   logger.error('Title is required');
-  //   return res
-  //     .status(400)
-  //     .send('Invalid data');
-  // }
+  if (!title) {
+    logger.error('Title is required');
+    return res
+      .status(400)
+      .send('Invalid data');
+  }
 
-  // if (!url) {
-  //   logger.error('URL is required');
-  //   return res
-  //     .status(400)
-  //     .send('Invalid data');
-  // }
+  if (!url) {
+    logger.error('URL is required');
+    return res
+      .status(400)
+      .send('Invalid data');
+  }
 
-  // if (!desc) {
-  //   logger.error('Description is required');
-  //   return res
-  //     .status(400)
-  //     .send('Invalid data');
-  // }
+  if (!desc) {
+    logger.error('Description is required');
+    return res
+      .status(400)
+      .send('Invalid data');
+  }
 
-  // if (!rating) {
-  //   logger.error('Rating is required');
-  //   return res
-  //     .status(400)
-  //     .send('Invalid data');
-  // }
+  if (!rating) {
+    logger.error('Rating is required');
+    return res
+      .status(400)
+      .send('Invalid data');
+  }
 
   const id = uuid();
 
@@ -138,8 +139,29 @@ app.post('/bookmarks', (req, res) => {
   res
     .status(201)
     .location(`http://localhost:8000/bookmarks/${id}`)
-    .json(bookmarks);
+    .json(bookmark);
 
+});
+
+app.delete('/bookmarks/:id', (req, res) => {
+  const { id } = req.params;
+
+  const bookmarkIndex = bookmarks.findIndex(b => b.id == id);
+
+  if (bookmarkIndex === -1) {
+    logger.error(`Bookmark with id ${id} not found.`);
+    return res
+      .status(404)
+      .send('Not found');
+  }
+
+  bookmarks.splice(bookmarkIndex, 1);
+  console.log(bookmarks);
+  logger.info(`Bookmark with id ${id} deleted`);
+  res
+    .status(204)
+    .json(bookmarks)
+    .end();
 });
 
 
