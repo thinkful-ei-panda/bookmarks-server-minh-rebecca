@@ -59,15 +59,30 @@ app.use(function validateBearerToken(req, res, next) {
   const authToken = req.get('Authorization');
 
   if (!authToken || authToken.split(' ')[1] !== apiToken) {
-    return res.status(401).json({ error: 'Unauthorized request' })
+    // logger.error(`Unauthorized request to path: ${req.path}`);
+    // return res.status(401).json({ error: 'Unauthorized request' })
+    console.log(authToken);
+    console.log(apiToken);
   }
   // move to the next middleware
   next()
 });
 
-app.get('/', (req,res) => {
-  res.send('Hello, world!')
+app.get('/bookmark/:id', (req,res) => {
+  const { id } = req.params;
+  const bookmark = bookmarks.find(b => b.id == id);
+
+  // make sure we found a card
+  if (!bookmark) {
+    logger.error(`Bookmark with id ${id} not found.`);
+    return res
+      .status(404)
+      .send('Bookmark Not Found');
+  }
+
+  res.json(bookmark);
 });
+
 
 app.use(function errorHandler(error, req, res, next) {
   let response;
