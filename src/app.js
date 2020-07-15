@@ -68,6 +68,10 @@ app.use(function validateBearerToken(req, res, next) {
   next()
 });
 
+app.get("/bookmarks",(req, res) => {
+  res.json(bookmarks);
+}); 
+
 app.get('/bookmark/:id', (req,res) => {
   const { id } = req.params;
   const bookmark = bookmarks.find(b => b.id == id);
@@ -82,7 +86,6 @@ app.get('/bookmark/:id', (req,res) => {
 
   res.json(bookmark);
 });
-
 
 app.use(function errorHandler(error, req, res, next) {
   let response;
